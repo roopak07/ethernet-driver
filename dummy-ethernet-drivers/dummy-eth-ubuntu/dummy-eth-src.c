@@ -117,6 +117,45 @@ static int __init dummy_init(void)
         return -ENOMEM;
 
     if (register_netdev(dummy_dev)) {
+        /*
+         * register_netdev(dev)
+         *
+         * Registers the network device with the Linux networking subsystem,
+         * making it visible and usable by the kernel and user space.
+         *
+         * Key actions performed:
+         *
+         * 1. Validates the net_device structure:
+         *    - Ensures mandatory fields (e.g., netdev_ops) are set correctly.
+         *
+         * 2. Assigns and registers the device name:
+         *    - Resolves names like "dummy%d" into "dummy0", "dummy1", etc.
+         *
+         * 3. Initializes internal kernel networking structures:
+         *    - Adds the device to the global network device list.
+         *
+         * 4. Makes the device visible to user space:
+         *    - Appears in tools like `ip link` / `ifconfig`.
+         *
+         * 5. Sets up sysfs entries:
+         *    - Creates entries under /sys/class/net/<devname>/
+         *
+         * 6. Enables networking operations:
+         *    - Device is now ready for open(), stop(), transmit, etc.
+         *      via the callbacks defined in netdev_ops.
+         *
+         * 7. Notifies the kernel and subsystems:
+         *    - Generates NETDEV_REGISTER event notifications.
+         *
+         * Notes:
+         *    - The device is NOT "up" yet; it must be explicitly brought up
+         *      using "ip link set <dev> up".
+         *    - netdev_ops and other parameters must be initialized before
+         *      calling register_netdev().
+         *
+         * Return:
+         *    0 on success, negative error code on failure.
+        */
         free_netdev(dummy_dev);
         return -ENODEV;
     }
