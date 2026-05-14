@@ -58,6 +58,13 @@ static void dummy_setup(struct net_device *dev)
 static int __init dummy_init(void)
 {
     dummy_dev = alloc_netdev(0, "dummy%d", NET_NAME_UNKNOWN, dummy_setup);
+    /*
+        alloc_netdev()
+           └── alloc memory
+           └── call dummy_setup(dev)   <-- happens here
+           └── return dev
+        register_netdev(dev)           <-- happens later
+    */
     if (!dummy_dev)
         return -ENOMEM;
 
