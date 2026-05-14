@@ -85,7 +85,21 @@ static void dummy_setup(struct net_device *dev)
      *      to alloc_netdev().
      */
     dev->netdev_ops = &dummy_ops;
+    /*
+        1. dev->netdev_ops = &dummy_ops;
+            This overwrites whatever was previously set in the ether_setup().
+            After ether_setup(dev), netdev_ops is typically NULL (not fully assigned)
+            When we do:
+            Cdev->netdev_ops = &dummy_ops;
+            you're assigning your driver's operations
+    */
     dev->flags |= IFF_NOARP;
+    /*
+        This is not overwriting, it's adding a flag.
+        ether_setup() already sets: dev->flags = IFF_BROADCAST | IFF_MULTICAST;
+        ev->flags |= IFF_NOARP means keep existing flags + add IFF_NOARP
+        So final flags become: IFF_BROADCAST | IFF_MULTICAST | IFF_NOARP
+    */
 }
 
 /* Module init */
