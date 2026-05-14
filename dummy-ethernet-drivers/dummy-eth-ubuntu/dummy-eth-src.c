@@ -50,6 +50,40 @@ static const struct net_device_ops dummy_ops = {
 static void dummy_setup(struct net_device *dev)
 {
     ether_setup(dev);  // Ethernet defaults
+    /*
+     * ether_setup(dev)
+     *
+     * Initializes a network device as a standard Ethernet device by
+     * setting default Ethernet-specific parameters and behaviors.
+     *
+     * Key initializations performed:
+     *
+     * 1. Device type and header configuration:
+     *    - dev->type = ARPHRD_ETHER          (marks device as Ethernet)
+     *    - dev->hard_header_len = ETH_HLEN   (Ethernet header length)
+     *    - dev->addr_len = ETH_ALEN          (MAC address length = 6 bytes)
+     *
+     * 2. Device flags:
+     *    - Enables broadcast and multicast support
+     *      (IFF_BROADCAST | IFF_MULTICAST)
+     *
+     * 3. MTU (Maximum Transmission Unit):
+     *    - dev->mtu = ETH_DATA_LEN           (~1500 bytes)
+     *
+     * 4. Header operations:
+     *    - Assigns default Ethernet header handling functions
+     *      via dev->header_ops = &eth_header_ops
+     *
+     * 5. Device features:
+     *    - Sets baseline Ethernet capabilities (kernel-version dependent)
+     *
+     * Notes:
+     *    - This provides a default Ethernet configuration.
+     *    - Driver-specific fields (e.g., netdev_ops) should be set
+     *      after calling ether_setup().
+     *    - Typically used inside the device setup function passed
+     *      to alloc_netdev().
+     */
     dev->netdev_ops = &dummy_ops;
     dev->flags |= IFF_NOARP;
 }
